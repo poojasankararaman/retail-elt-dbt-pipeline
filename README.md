@@ -104,10 +104,3 @@ retries. Start it locally with `docker compose up` and open http://localhost:808
 *(The DAG compiles and the dbt/loader commands it calls are tested; the Docker Airflow setup itself
 has not been exercised end to end yet.)*
 
-## What I would do next
-
-- Run against Snowflake and add cost controls (X-Small warehouse, auto-suspend, query tags).
-- Add a lookback window to the incremental model and a late-arriving-data test.
-- Publish dbt docs to GitHub Pages and add source freshness alerts to Slack.
-- Add `dbt-expectations`-style distribution checks and anomaly alerts on daily revenue.
-- Feed the marts into a dashboard (Metabase or Looker Studio).
