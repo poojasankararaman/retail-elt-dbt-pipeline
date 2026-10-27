@@ -1,0 +1,14 @@
+__pycache__/
+*.pyc
+.venv/
+*.duckdb
+*.duckdb.wal
+data/raw/*.csv
+retail/target/
+retail/dbt_packages/
+retail/logs/
+logs/
+.env
+.DS_Store
+retail/.user.yml
+.ruff_cache/
