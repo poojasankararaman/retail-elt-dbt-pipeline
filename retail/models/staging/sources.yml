@@ -1,0 +1,15 @@
+version: 2
+
+sources:
+  - name: raw
+    schema: raw
+    description: Raw (bronze) tables landed by ingestion/load_raw.py. Never modified by dbt.
+    loaded_at_field: _loaded_at
+    freshness:
+      warn_after: { count: 48, period: hour }
+    tables:
+      - name: customers
+      - name: products
+      - name: orders
+      - name: order_items
+      - name: payments
