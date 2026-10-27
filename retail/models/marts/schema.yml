@@ -1,0 +1,48 @@
+version: 2
+
+models:
+  - name: fct_orders
+    description: >
+      One row per order. Incremental merge on order_id, driven by _loaded_at.
+      Totals come from items and payments aggregated per order.
+    columns:
+      - name: order_id
+        tests: [unique, not_null]
+      - name: customer_id
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_customers')
+                field: customer_id
+      - name: purchase_date
+        tests:
+          - relationships:
+              arguments:
+                to: ref('dim_date')
+                field: date_day
+      - name: payment_total
+        tests:
+          - not_null
+
+  - name: dim_customers
+    description: Current-state customer dimension with lifetime metrics.
+    columns:
+      - name: customer_id
+        tests: [unique, not_null]
+
+  - name: dim_products
+    columns:
+      - name: product_id
+        tests: [unique, not_null]
+
+  - name: dim_date
+    columns:
+      - name: date_day
+        tests: [unique, not_null]
+
+  - name: mart_daily_revenue
+    description: Daily orders and revenue for dashboards.
+    columns:
+      - name: date_day
+        tests: [unique, not_null]
