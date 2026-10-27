@@ -1,0 +1,37 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Lint Python
+        run: ruff check ingestion dags
+
+      - name: Generate sample data and load raw
+        run: |
+          python ingestion/generate_sample_data.py --n-orders 2000 --seed 42 --day 1 --out data/raw
+          python ingestion/load_raw.py --mode replace
+
+      - name: dbt build (models + tests)
+        run: cd retail && dbt build --profiles-dir .
+
+      - name: Day-2 batch (incremental + snapshot)
+        run: |
+          python ingestion/generate_sample_data.py --n-orders 400 --seed 43 --day 2 --out data/raw
+          python ingestion/load_raw.py --mode append
+          cd retail && dbt build --profiles-dir . && dbt snapshot --profiles-dir .

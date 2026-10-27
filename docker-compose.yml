@@ -1,0 +1,15 @@
+# Minimal local Airflow (standalone mode) for development. Not for production.
+# UI: http://localhost:8080  (login printed in the container logs on first start)
+services:
+  airflow:
+    image: apache/airflow:2.10.2-python3.11
+    command: standalone
+    ports:
+      - "8080:8080"
+    environment:
+      AIRFLOW__CORE__LOAD_EXAMPLES: "false"
+      AIRFLOW__CORE__DAGS_FOLDER: /opt/airflow/project/dags
+      _PIP_ADDITIONAL_REQUIREMENTS: "dbt-duckdb>=1.10,<2.0 duckdb pandas"
+      DBT_TARGET: duckdb
+    volumes:
+      - ./:/opt/airflow/project
